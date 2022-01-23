@@ -1,0 +1,22 @@
+{
+  "name": "github-status-updater",
+  "version": "1.0.0",
+  "description": "Github status updater",
+  "scripts": {
+    "update-status": "node index.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arunnalla/goodreads-updater.git"
+  },
+  "author": "Arun Nalla <hello@arunnalla.com>",
+  "bugs": {
+    "url": "https://github.com/arunnalla/goodreads-updater/issues"
+  },
+  "homepage": "https://github.com/arunnalla/goodreads-updater#readme",
+  "dependencies": {
+    "axios": "^0.25.0",
+    "github-profile-status": "^1.0.0"
+  }
+}
