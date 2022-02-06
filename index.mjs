@@ -13,6 +13,23 @@ async function main() {
 }
 
 async function getStatus() {
+  const { hours, mins } = await getCurrentHoursAndMins();
+
+  const hours12HrClock = getHours12HrClock(hours);
+  const roundedOffMins = mins >= 30 ? '30' : '00';
+
+  const meridiem = hours > 12 ? 'PM' : 'AM';
+
+  const emoji = getEmoji(hours12HrClock, roundedOffMins);
+
+  return {
+    emoji,
+    message: hours12HrClock + ':' + roundedOffMins + ' ' + meridiem + ' IST',
+    limitedAvailability: false,
+  };
+}
+
+async function getCurrentHoursAndMins() {
   const response = await axios.get(
     'http://worldtimeapi.org/api/timezone/' + TIMEZONE
   );
@@ -21,23 +38,25 @@ async function getStatus() {
   const fullTime = datetime.split('T')[1];
   const time = fullTime.split('.')[0];
 
-  const hours = time.split(':')[0];
-  const mins = time.split(':')[1];
+  const hours = parseInt(time.split(':')[0]);
+  const mins = parseInt(time.split(':')[1]);
 
-  const hours12HrClock = hours > 12 ? String(hours - 12) : String(hours);
-  const roundedOffMins = mins > 30 ? '30' : '00';
+  return { hours, mins };
+}
 
-  const label =
-    roundedOffMins !== '00' ? hours12HrClock + roundedOffMins : hours12HrClock;
+function getHours12HrClock(hours24HrClock) {
+  if (hours24HrClock === 0) {
+    return '12';
+  }
 
-  const emoji = ':clock' + label + ':';
-  const meridiem = hours > 12 ? 'PM' : 'AM';
+  return hours24HrClock > 12
+    ? String(hours24HrClock - 12)
+    : String(hours24HrClock);
+}
 
-  return {
-    emoji,
-    message: hours12HrClock + ':' + roundedOffMins + ' ' + meridiem + ' IST',
-    limitedAvailability: false,
-  };
+function getEmoji(hours12HrClock, roundedOffMins) {
+  const hourLabel = (hours12HrClock + roundedOffMins).replace('00', '');
+  return ':clock' + hourLabel + ':';
 }
 
 main();
