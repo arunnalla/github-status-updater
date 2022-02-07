@@ -9,22 +9,21 @@ async function main() {
   });
 
   const status = await getStatus();
-  await profileStatus.update(status);
+  const response = await profileStatus.update(status);
+  console.log(response);
 }
 
 async function getStatus() {
   const { hours, mins } = await getCurrentHoursAndMins();
 
-  const hours12HrClock = getHours12HrClock(hours);
+  const paddedHours = hours <= 9 ? `0${hours}` : String(hours);
   const roundedOffMins = mins >= 30 ? '30' : '00';
 
-  const meridiem = hours > 12 ? 'PM' : 'AM';
-
-  const emoji = getEmoji(hours12HrClock, roundedOffMins);
+  const emoji = getEmoji(hours, roundedOffMins);
 
   return {
     emoji,
-    message: hours12HrClock + ':' + roundedOffMins + ' ' + meridiem + ' IST',
+    message: `${paddedHours}:${roundedOffMins} IST`,
     limitedAvailability: false,
   };
 }
@@ -44,6 +43,16 @@ async function getCurrentHoursAndMins() {
   return { hours, mins };
 }
 
+function getEmoji(hours, roundedOffMins) {
+  if (hours >= 20 || hours <= 5) {
+    return ':crescent_moon:';
+  }
+
+  const hours12HrClock = getHours12HrClock(hours);
+  const hourLabel = `${hours12HrClock}${roundedOffMins}`.replace('00', '');
+  return `:clock${hourLabel}:`;
+}
+
 function getHours12HrClock(hours24HrClock) {
   if (hours24HrClock === 0) {
     return '12';
@@ -52,11 +61,6 @@ function getHours12HrClock(hours24HrClock) {
   return hours24HrClock > 12
     ? String(hours24HrClock - 12)
     : String(hours24HrClock);
-}
-
-function getEmoji(hours12HrClock, roundedOffMins) {
-  const hourLabel = (hours12HrClock + roundedOffMins).replace('00', '');
-  return ':clock' + hourLabel + ':';
 }
 
 main();
