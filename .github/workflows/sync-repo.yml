@@ -9,6 +9,6 @@ jobs:
   call-workflow:
     uses: arunnalla/.github/.github/workflows/sync-repos.yml@main
     with:
-      name: guthub-status-updater
+      name: github-status-updater
     secrets:
       gitlabToken: ${{ secrets.GITLAB_TOKEN }}
