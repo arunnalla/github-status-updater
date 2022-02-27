@@ -1,0 +1,14 @@
+name: Sync Repo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  call-workflow:
+    uses: arunnalla/.github/.github/workflows/sync-repos.yml@main
+    with:
+      name: guthub-status-updater
+    secrets:
+      gitlabToken: ${{ secrets.GITLAB_TOKEN }}
